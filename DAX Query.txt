@@ -1,0 +1,48 @@
+// DAX Query
+EVALUATE
+    SELECTCOLUMNS ( //pour renommer les champs dans summarize..
+	    SUMMARIZECOLUMNS (
+	    	'DimDate'[Annee],
+	        'Customer category'[CustomerCategoryName],
+	        "Montant", [Prix Total]
+	    ),
+	"Annee", [Annee],    
+	"Categorie", [CustomerCategoryName],
+	"Montant", [Montant]
+	)
+ORDER BY [Annee] DESC, [Montant] DESC
+
+
+// DAX Query
+DEFINE
+
+  VAR vDateDebut = DATE(2015, 1, 1)
+  
+  VAR FiltreDate = // Filtre la table des dates
+    FILTER(
+      KEEPFILTERS(VALUES('DimDate'[Date])),
+      'DimDate'[Date] >= vDateDebut
+    )
+
+  VAR tab = // Tableau à afficher
+    SELECTCOLUMNS(
+	    SUMMARIZECOLUMNS(
+	      'DimDate'[Annee], 
+		  'Customer category'[CustomerCategoryName],
+	      FiltreDate,
+	      "Montant", [Prix Total]
+	    ),
+	"Annee", [Annee],
+	"Categorie", [CustomerCategoryName],
+	"Montant", [Montant]
+	)
+
+EVALUATE
+  tab
+
+ORDER BY
+  [Annee] DESC,
+  [Montant] DESC
+  
+  
+  
